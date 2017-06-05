@@ -713,6 +713,7 @@ module.exports.run = function (worker) {
         type: 'player',
         swid: serverWorkerId,
         name: playerOptions.name,
+        team: playerOptions.team,
         x: startingPos.x,
         y: startingPos.y,
         diam: PLAYER_DIAMETER,
@@ -720,6 +721,7 @@ module.exports.run = function (worker) {
         score: 0
       };
 
+      console.log("player name: " + player.name + " and team is: " + player.team);
       socket.player = stateManager.create(player);
 
       respond(null, player);

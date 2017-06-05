@@ -94,7 +94,7 @@
           WORLD_CELL_HEIGHT = data.cellHeight;
           WORLD_CELL_OVERLAP_DISTANCE = data.cellOverlapDistance;
           SERVER_WORKER_ID = data.serverWorkerId;
-          ENVIRONMENT = data.environment;
+          ENVIRONMENT = data.environment; // SW - turn this off if fps is low
 
           channelGrid = new ChannelGrid({
             worldWidth: WORLD_WIDTH,
@@ -142,6 +142,11 @@
           game.load.image('grass-2', grassTextures[2]);
           game.load.image('grass-3', grassTextures[3]);
           game.load.image('grass-4', grassTextures[4]);
+
+          game.load.image('up-arrow', 'img/circle_up.png');
+          game.load.image('down-arrow', 'img/circle_down.png');
+          game.load.image('left-arrow', 'img/circle_left.png');
+          game.load.image('right-arrow', 'img/circle_right.png');
         }
 
         function handleCellData(stateList) {
@@ -284,6 +289,7 @@
             user.label.bringToTop();
             user.sprite.bringToTop();
           });
+          game.scoreText.bringToTop();
         }
 
         function updateUser(userData) {
@@ -322,15 +328,72 @@
 
         function create() {
           background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
+
+          // Dabney added
+          game.fpsText = game.add.text(game.camera.width-130, game.camera.height-100, 'FPS: ');
+          game.fpsText.fixedToCamera = true;
+          game.scoreText = game.add.text(game.camera.width-130, game.camera.height-50, 'Score: 0');
+          game.scoreText.fixedToCamera = true;
+
+          game.leftArrowButton = game.add.button(game.camera.width/2-64, game.camera.height-64, 'left-arrow', null, this, 0)
+          game.leftArrowButton.fixedToCamera = true;
+          game.leftArrowButton.myKey = keys.left;
+          function leftArrowPressCallback() {
+            // keys.left.isDown = true;
+            console.log("leftArrowPressCallback")
+          }
+          game.leftArrowButton.onInputUp.add(buttonUp, this)
+          game.leftArrowButton.onInputDown.add(buttonDown, this)
+
+          game.rightArrowButton = game.add.button(game.camera.width/2+64, game.camera.height-64, 'right-arrow', rightArrowPressCallback, this, 0)
+          game.rightArrowButton.fixedToCamera = true;
+          game.rightArrowButton.myKey = keys.right;
+          function rightArrowPressCallback() {
+            keys.right.isDown = true;
+          }
+          game.rightArrowButton.onInputUp.add(buttonUp, this)
+          game.rightArrowButton.onInputDown.add(buttonDown, this)
+
+          game.upArrowButton = game.add.button(game.camera.width/2, game.camera.height-96, 'up-arrow', upArrowPressCallback, this, 0)
+          game.upArrowButton.fixedToCamera = true;
+          game.upArrowButton.myKey = keys.up;
+          function upArrowPressCallback() {
+            keys.up.isDown = true;
+          }
+          game.upArrowButton.onInputUp.add(buttonUp, this)
+          game.upArrowButton.onInputDown.add(buttonDown, this)
+
+          game.downArrowButton = game.add.button(game.camera.width/2, game.camera.height-32, 'down-arrow', downArrowPressCallback, this, 0)
+          game.downArrowButton.fixedToCamera = true;
+          game.downArrowButton.myKey = keys.down;
+          function downArrowPressCallback() {
+            keys.down.isDown = true;
+          }
+          game.downArrowButton.onInputUp.add(buttonUp, this)
+          game.downArrowButton.onInputDown.add(buttonDown, this)
+
+
+          function buttonUp(myButton) {
+            myButton.myKey.isDown = false;
+          }
+          
+          function buttonDown(myButton) {
+            myButton.myKey.isDown = true;
+            // keys.left.isDown = true;
+          }
+
+
           game.time.advancedTiming = true;
           game.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
           // Generate a random name for the user.
-          var playerName = 'user-' + Math.round(Math.random() * 10000);
+          // var playerName = 'user-' + Math.round(Math.random() * 10000);
+          var playerName = prompt("Please enter your name", "name");
 
           function joinWorld() {
             socket.emit('join', {
               name: playerName,
+              team: Math.floor(Math.random() * 2)
             }, function (err, playerData) {
               playerId = playerData.id;
               updateCellWatchers(playerData, 'cell-data', handleCellData);
@@ -378,6 +441,10 @@
             lastActionTime = Date.now();
             // Send the player operations for the server to process.
             socket.emit('action', playerOp);
+          }
+
+          if (player) {
+            game.scoreText.text = "Score: " + player.score;
           }
         }
 

@@ -48,6 +48,7 @@ BotManager.prototype.addBot = function (options) {
     type: 'player',
     subtype: 'bot',
     name: options.name || 'bot-' + Math.round(Math.random() * 10000),
+    team: options.team || Math.floor(Math.random() * 2),
     score: options.score || 0,
     speed: options.speed == null ? this.botMoveSpeed : options.speed,
     mass: options.mass || this.botMass,
