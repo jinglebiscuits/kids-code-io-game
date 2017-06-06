@@ -335,7 +335,12 @@
           game.scoreText = game.add.text(game.camera.width-130, game.camera.height-50, 'Score: 0');
           game.scoreText.fixedToCamera = true;
 
-          game.leftArrowButton = game.add.button(game.camera.width/2-64, game.camera.height-64, 'left-arrow', null, this, 0)
+
+          buttonWidth = 50 * window.devicePixelRatio;
+          console.log("buttonWidth = " + buttonWidth);
+          game.leftArrowButton = game.add.button(game.camera.width/2-buttonWidth, game.camera.height-buttonWidth, 'left-arrow', null, this, 0);
+          game.leftArrowButton.width = buttonWidth;
+          game.leftArrowButton.height = buttonWidth;
           game.leftArrowButton.fixedToCamera = true;
           game.leftArrowButton.myKey = keys.left;
           function leftArrowPressCallback() {
@@ -345,7 +350,9 @@
           game.leftArrowButton.onInputUp.add(buttonUp, this)
           game.leftArrowButton.onInputDown.add(buttonDown, this)
 
-          game.rightArrowButton = game.add.button(game.camera.width/2+64, game.camera.height-64, 'right-arrow', rightArrowPressCallback, this, 0)
+          game.rightArrowButton = game.add.button(game.camera.width/2+buttonWidth, game.camera.height-buttonWidth, 'right-arrow', rightArrowPressCallback, this, 0);
+          game.rightArrowButton.width = buttonWidth;
+          game.rightArrowButton.height = buttonWidth;
           game.rightArrowButton.fixedToCamera = true;
           game.rightArrowButton.myKey = keys.right;
           function rightArrowPressCallback() {
@@ -354,7 +361,9 @@
           game.rightArrowButton.onInputUp.add(buttonUp, this)
           game.rightArrowButton.onInputDown.add(buttonDown, this)
 
-          game.upArrowButton = game.add.button(game.camera.width/2, game.camera.height-96, 'up-arrow', upArrowPressCallback, this, 0)
+          game.upArrowButton = game.add.button(game.camera.width/2, game.camera.height-buttonWidth*2, 'up-arrow', upArrowPressCallback, this, 0);
+          game.upArrowButton.width = buttonWidth;
+          game.upArrowButton.height = buttonWidth;
           game.upArrowButton.fixedToCamera = true;
           game.upArrowButton.myKey = keys.up;
           function upArrowPressCallback() {
@@ -363,7 +372,9 @@
           game.upArrowButton.onInputUp.add(buttonUp, this)
           game.upArrowButton.onInputDown.add(buttonDown, this)
 
-          game.downArrowButton = game.add.button(game.camera.width/2, game.camera.height-32, 'down-arrow', downArrowPressCallback, this, 0)
+          game.downArrowButton = game.add.button(game.camera.width/2, game.camera.height-buttonWidth, 'down-arrow', downArrowPressCallback, this, 0)
+          game.downArrowButton.width = buttonWidth;
+          game.downArrowButton.height = buttonWidth;
           game.downArrowButton.fixedToCamera = true;
           game.downArrowButton.myKey = keys.down;
           function downArrowPressCallback() {
@@ -450,13 +461,6 @@
 
         function render() {
           var now = Date.now();
-
-          if (ENVIRONMENT == 'dev') {
-            game.debug.text('FPS:   ' + game.time.fps, 2, 14, "#00FF00");
-            if (player) {
-              game.debug.text('Score: ' + player.score, 2, 30, "#00FF00");
-            }
-          }
 
           for (var i in users) {
             if (users.hasOwnProperty(i)) {
