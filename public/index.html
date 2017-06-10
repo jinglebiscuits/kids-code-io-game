@@ -249,9 +249,9 @@
             user.texturePrefix = userData.team;
           } else {
             sprite = createTexturedSprite({
-              texture: 'others-down'
+              texture: userData.team + '-down'
             });
-            user.texturePrefix = 'others';
+            user.texturePrefix = userData.team;
           }
 
           user.score = userData.score;
