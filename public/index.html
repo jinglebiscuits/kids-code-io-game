@@ -123,15 +123,15 @@
 
           game.load.image('background', BACKGROUND_TEXTURE);
 
-          game.load.image('you-up', youTextures.up);
-          game.load.image('you-down', youTextures.down);
-          game.load.image('you-right', youTextures.right);
-          game.load.image('you-left', youTextures.left);
+          game.load.image('0-up', youTextures.up);
+          game.load.image('0-down', youTextures.down);
+          game.load.image('0-right', youTextures.right);
+          game.load.image('0-left', youTextures.left);
 
-          game.load.image('others-up', othersTextures.up);
-          game.load.image('others-down', othersTextures.down);
-          game.load.image('others-right', othersTextures.right);
-          game.load.image('others-left', othersTextures.left);
+          game.load.image('1-up', othersTextures.up);
+          game.load.image('1-down', othersTextures.down);
+          game.load.image('1-right', othersTextures.right);
+          game.load.image('1-left', othersTextures.left);
 
           game.load.image('bot-up', botTextures.up);
           game.load.image('bot-down', botTextures.down);
@@ -238,14 +238,15 @@
 
           if (userData.id == playerId) {
             sprite = createTexturedSprite({
-              texture: 'you-down'
+              texture: userData.team + '-down'
             });
-            user.texturePrefix = 'you';
+            sprite.tint = "0x919191";
+            user.texturePrefix = userData.team;
           } else if (userData.subtype == 'bot') {
             sprite = createTexturedSprite({
-              texture: 'bot-down'
+              texture: userData.team + '-down'
             });
-            user.texturePrefix = 'bot';
+            user.texturePrefix = userData.team;
           } else {
             sprite = createTexturedSprite({
               texture: 'others-down'
@@ -404,7 +405,6 @@
           function joinWorld() {
             socket.emit('join', {
               name: playerName,
-              team: Math.floor(Math.random() * 2)
             }, function (err, playerData) {
               playerId = playerData.id;
               updateCellWatchers(playerData, 'cell-data', handleCellData);

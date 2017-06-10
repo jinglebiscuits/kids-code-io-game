@@ -42,6 +42,8 @@ module.exports = {
   PLAYER_DIAMETER: 45,
   PLAYER_MASS: 20,
 
+  TEAM_COUNT: 2,
+
   // Note that the number of bots needs to be either 0 or a multiple of the number of
   // worker processes or else it will get rounded up/down.
   BOT_COUNT: 10,
