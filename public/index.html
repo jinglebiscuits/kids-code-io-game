@@ -286,7 +286,16 @@
             }
             return 0;
           });
+          var team0Score = 0;
+          var team1Score = 0;
           usersArray.forEach(function (user) {
+            // we should do a for loop using TEAM_COUNT
+            //console.log("damnit" + user.name);
+            if (user.team == 0) {
+              team0Score += user.score;
+            } else if (user.team == 1) {
+              team1Score += user.score;
+            }
             user.label.bringToTop();
             user.sprite.bringToTop();
           });
@@ -296,6 +305,7 @@
         function updateUser(userData) {
           var user = users[userData.id];
           if (user) {
+            user.team = userData.team;
             user.score = userData.score;
             user.direction = userData.direction;
             moveUser(userData.id, userData.x, userData.y);
@@ -454,6 +464,7 @@
             socket.emit('action', playerOp);
           }
 
+          // Check if player exists before trying to get the score
           if (player) {
             game.scoreText.text = "Score: " + player.score;
           }
