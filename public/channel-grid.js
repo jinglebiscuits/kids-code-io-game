@@ -154,6 +154,7 @@ ChannelGrid.prototype.publish = function (channelName, objects, options) {
 
   var grid = this._generateEmptyGrid(this.rows, this.cols);
 
+  // SW this iterates through each obj in objects and calls the anon function using the current obj
   objects.forEach(function (obj) {
     var affectedCells;
     if (options.cellIndexesFactory) {
