@@ -93,7 +93,9 @@ var CellController = function (options, util) {
   }
 
   for (var b = 0; b < this.botCount; b++) {
-    var bot = this.botManager.addBot();
+    var bot = this.botManager.addBot({
+      team: Math.floor(Math.random() * config.TEAM_COUNT)
+    });
     cellData.player[bot.id] = bot;
   }
 

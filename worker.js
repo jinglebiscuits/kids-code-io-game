@@ -31,6 +31,8 @@ var SPECIAL_UPDATE_INTERVALS = config.SPECIAL_UPDATE_INTERVALS;
 var PLAYER_DIAMETER = config.PLAYER_DIAMETER;
 var PLAYER_MASS = config.PLAYER_MASS;
 
+var TEAM_COUNT = config.TEAM_COUNT;
+
 var OUTBOUND_STATE_TRANSFORMERS = config.OUTBOUND_STATE_TRANSFORMERS;
 
 var CHANNEL_INBOUND_CELL_PROCESSING = 'internal/cell-processing-inbound';
@@ -702,6 +704,7 @@ module.exports.run = function (worker) {
         cellHeight: WORLD_CELL_HEIGHT,
         cellOverlapDistance: WORLD_CELL_OVERLAP_DISTANCE,
         serverWorkerId: serverWorkerId,
+        teamCount: TEAM_COUNT,
         environment: environment
       });
     });
@@ -713,7 +716,7 @@ module.exports.run = function (worker) {
         type: 'player',
         swid: serverWorkerId,
         name: playerOptions.name,
-        team: playerOptions.team,
+        team: Math.floor(Math.random() * TEAM_COUNT),
         x: startingPos.x,
         y: startingPos.y,
         diam: PLAYER_DIAMETER,

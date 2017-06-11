@@ -123,15 +123,15 @@
 
           game.load.image('background', BACKGROUND_TEXTURE);
 
-          game.load.image('you-up', youTextures.up);
-          game.load.image('you-down', youTextures.down);
-          game.load.image('you-right', youTextures.right);
-          game.load.image('you-left', youTextures.left);
+          game.load.image('0-up', youTextures.up);
+          game.load.image('0-down', youTextures.down);
+          game.load.image('0-right', youTextures.right);
+          game.load.image('0-left', youTextures.left);
 
-          game.load.image('others-up', othersTextures.up);
-          game.load.image('others-down', othersTextures.down);
-          game.load.image('others-right', othersTextures.right);
-          game.load.image('others-left', othersTextures.left);
+          game.load.image('1-up', othersTextures.up);
+          game.load.image('1-down', othersTextures.down);
+          game.load.image('1-right', othersTextures.right);
+          game.load.image('1-left', othersTextures.left);
 
           game.load.image('bot-up', botTextures.up);
           game.load.image('bot-down', botTextures.down);
@@ -238,19 +238,20 @@
 
           if (userData.id == playerId) {
             sprite = createTexturedSprite({
-              texture: 'you-down'
+              texture: userData.team + '-down'
             });
-            user.texturePrefix = 'you';
+            sprite.tint = "0x919191";
+            user.texturePrefix = userData.team;
           } else if (userData.subtype == 'bot') {
             sprite = createTexturedSprite({
-              texture: 'bot-down'
+              texture: userData.team + '-down'
             });
-            user.texturePrefix = 'bot';
+            user.texturePrefix = userData.team;
           } else {
             sprite = createTexturedSprite({
-              texture: 'others-down'
+              texture: userData.team + '-down'
             });
-            user.texturePrefix = 'others';
+            user.texturePrefix = userData.team;
           }
 
           user.score = userData.score;
@@ -285,16 +286,35 @@
             }
             return 0;
           });
+          var team0Score = 0;
+          var team1Score = 0;
           usersArray.forEach(function (user) {
+            // we should do a for loop using TEAM_COUNT
+            //console.log("damnit" + user.name);
+            if (user.team == 0) {
+              team0Score += user.score;
+            } else if (user.team == 1) {
+              team1Score += user.score;
+            }
             user.label.bringToTop();
             user.sprite.bringToTop();
           });
-          game.scoreText.bringToTop();
+          game.yourScoreText.bringToTop();
+          if (player) {
+            if (player.team == 0) {
+              game.yourTeamScore.text = "Your team score: " + team0Score;
+              game.otherTeamScore.text = "Other team score: " + team1Score;
+            } else {
+              game.yourTeamScore.text = "Your team score: " + team1Score;
+              game.otherTeamScore.text = "Other team score: " + team0Score;
+            }
+          }
         }
 
         function updateUser(userData) {
           var user = users[userData.id];
           if (user) {
+            user.team = userData.team;
             user.score = userData.score;
             user.direction = userData.direction;
             moveUser(userData.id, userData.x, userData.y);
@@ -330,15 +350,16 @@
           background = game.add.tileSprite(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 'background');
 
           // Dabney added
-          game.fpsText = game.add.text(game.camera.width-130, game.camera.height-100, 'FPS: ');
-          game.fpsText.fixedToCamera = true;
-          game.scoreText = game.add.text(game.camera.width-130, game.camera.height-50, 'Score: 0');
-          game.scoreText.fixedToCamera = true;
+          game.otherTeamScore = game.add.text(dpToPix(8), game.camera.height-150, 'Other team score: 0');
+          game.otherTeamScore.fixedToCamera = true;
+          game.yourTeamScore = game.add.text(dpToPix(8), game.camera.height-100, 'Your team score: 0');
+          game.yourTeamScore.fixedToCamera = true;
+          game.yourScoreText = game.add.text(dpToPix(8), game.camera.height-50, 'Your score: 0');
+          game.yourScoreText.fixedToCamera = true;
 
-
-          buttonWidth = 50 * window.devicePixelRatio;
+          buttonWidth = dpToPix(50);
           console.log("buttonWidth = " + buttonWidth);
-          game.leftArrowButton = game.add.button(0, game.camera.height-buttonWidth, 'left-arrow', null, this, 0);
+          game.leftArrowButton = game.add.button(game.camera.width - 3 * buttonWidth, game.camera.height-buttonWidth, 'left-arrow', null, this, 0);
           game.leftArrowButton.width = buttonWidth;
           game.leftArrowButton.height = buttonWidth;
           game.leftArrowButton.fixedToCamera = true;
@@ -350,7 +371,7 @@
           game.leftArrowButton.onInputUp.add(buttonUp, this)
           game.leftArrowButton.onInputDown.add(buttonDown, this)
 
-          game.rightArrowButton = game.add.button(buttonWidth*2, game.camera.height-buttonWidth, 'right-arrow', rightArrowPressCallback, this, 0);
+          game.rightArrowButton = game.add.button(game.camera.width - buttonWidth, game.camera.height-buttonWidth, 'right-arrow', rightArrowPressCallback, this, 0);
           game.rightArrowButton.width = buttonWidth;
           game.rightArrowButton.height = buttonWidth;
           game.rightArrowButton.fixedToCamera = true;
@@ -361,7 +382,7 @@
           game.rightArrowButton.onInputUp.add(buttonUp, this)
           game.rightArrowButton.onInputDown.add(buttonDown, this)
 
-          game.upArrowButton = game.add.button(buttonWidth, game.camera.height-buttonWidth*2, 'up-arrow', upArrowPressCallback, this, 0);
+          game.upArrowButton = game.add.button(game.camera.width - buttonWidth * 2, game.camera.height-buttonWidth*2, 'up-arrow', upArrowPressCallback, this, 0);
           game.upArrowButton.width = buttonWidth;
           game.upArrowButton.height = buttonWidth;
           game.upArrowButton.fixedToCamera = true;
@@ -372,7 +393,7 @@
           game.upArrowButton.onInputUp.add(buttonUp, this)
           game.upArrowButton.onInputDown.add(buttonDown, this)
 
-          game.downArrowButton = game.add.button(buttonWidth, game.camera.height-buttonWidth, 'down-arrow', downArrowPressCallback, this, 0)
+          game.downArrowButton = game.add.button(game.camera.width - buttonWidth * 2, game.camera.height-buttonWidth, 'down-arrow', downArrowPressCallback, this, 0)
           game.downArrowButton.width = buttonWidth;
           game.downArrowButton.height = buttonWidth;
           game.downArrowButton.fixedToCamera = true;
@@ -404,7 +425,6 @@
           function joinWorld() {
             socket.emit('join', {
               name: playerName,
-              team: Math.floor(Math.random() * 2)
             }, function (err, playerData) {
               playerId = playerData.id;
               updateCellWatchers(playerData, 'cell-data', handleCellData);
@@ -454,8 +474,9 @@
             socket.emit('action', playerOp);
           }
 
+          // Check if player exists before trying to get the score
           if (player) {
-            game.scoreText.text = "Score: " + player.score;
+            game.yourScoreText.text = "Your score: " + player.score;
           }
         }
 
@@ -479,6 +500,9 @@
               }
             }
           }
+        }
+        function dpToPix(dp) {
+          return dp * window.devicePixelRatio;
         }
       };
     </script>
